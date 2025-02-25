@@ -1,0 +1,2 @@
+C:/Users/uriel/flutter_ai/android/app/.cxx/RelWithDebInfo/40k4r2l5/x86/CMakeFiles/edit_cache.dir
+C:/Users/uriel/flutter_ai/android/app/.cxx/RelWithDebInfo/40k4r2l5/x86/CMakeFiles/rebuild_cache.dir

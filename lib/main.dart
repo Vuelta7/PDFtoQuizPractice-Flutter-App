@@ -34,6 +34,7 @@ class _PDFQuestionGeneratorState extends State<PDFQuestionGenerator> {
   final GeminiService gemini = GeminiService();
   String extractedText = "Select a PDF to extract text.";
   List<Map<String, String>> questionsAndAnswers = [];
+  TextEditingController textController = TextEditingController();
 
   Future<void> pickAndExtractText() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
@@ -80,7 +81,7 @@ class _PDFQuestionGeneratorState extends State<PDFQuestionGenerator> {
 
   Future<void> generateQuestionsFromText(String text) async {
     String prompt =
-        "Generate multiple-choice questions and answers from the following text. Format it as a valid Dart list of maps like this: [{ \"question\": \"...\", \"answer\": \"...\" }, ...]. Text: $text";
+        "Generate questions and answers, keep the answer short for example(1 to 3 words only) from the following text. Format it as a valid Dart list of maps like this: [{ \"question\": \"...\", \"answer\": \"...\" }, ...]. Text: $text";
 
     String? response = await gemini.sendMessage(prompt);
 
@@ -136,6 +137,22 @@ class _PDFQuestionGeneratorState extends State<PDFQuestionGenerator> {
             ElevatedButton(
               onPressed: pickAndExtractText,
               child: Text("Pick PDF"),
+            ),
+            SizedBox(height: 16),
+            TextField(
+              controller: textController,
+              maxLines: 5,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: "Or paste your text here",
+              ),
+            ),
+            SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () {
+                generateQuestionsFromText(textController.text);
+              },
+              child: Text("Generate Questions from Text"),
             ),
             SizedBox(height: 16),
             Text(
