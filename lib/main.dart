@@ -44,21 +44,21 @@ class _PDFQuestionGeneratorState extends State<PDFQuestionGenerator> {
 
     if (result != null) {
       String filePath = result.files.single.path!;
-      print("Selected file path: $filePath"); // Debug log for file path
+      print("Selected file path: $filePath");
       File file = File(filePath);
 
       try {
-        final PdfDocument pdfDoc =
-            PdfDocument(inputBytes: file.readAsBytesSync());
+        final PdfDocument pdfDoc = PdfDocument(
+          inputBytes: file.readAsBytesSync(),
+        );
         String text = "";
         for (int i = 0; i < pdfDoc.pages.count; i++) {
           PdfTextExtractor extractor = PdfTextExtractor(pdfDoc);
           text += "${extractor.extractText()}\n\n";
         }
 
-        print("Extracted text: $text"); // Debug log for extracted text
-        print(
-            "Is extracted text empty: ${text.isEmpty}"); // Check if text is empty
+        print("Extracted text: $text");
+        print("Is extracted text empty: ${text.isEmpty}");
 
         setState(() {
           extractedText = text.isNotEmpty ? text : "No text found in PDF.";
@@ -108,11 +108,13 @@ class _PDFQuestionGeneratorState extends State<PDFQuestionGenerator> {
         if (decodedData is List) {
           setState(() {
             questionsAndAnswers = List<Map<String, String>>.from(
-                decodedData.map((item) => Map<String, String>.from(item)));
+              decodedData.map((item) => Map<String, String>.from(item)),
+            );
           });
 
           print(
-              "Parsed Questions: $questionsAndAnswers"); // Debugging parsed questions
+            "Parsed Questions: $questionsAndAnswers",
+          ); // Debugging parsed questions
         } else {
           throw Exception("Response is not a List format.");
         }
@@ -160,34 +162,38 @@ class _PDFQuestionGeneratorState extends State<PDFQuestionGenerator> {
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             Expanded(
-              child: questionsAndAnswers.isNotEmpty
-                  ? ListView.builder(
-                      itemCount: questionsAndAnswers.length,
-                      itemBuilder: (context, index) {
-                        final qa = questionsAndAnswers[index];
-                        return Card(
-                          margin: EdgeInsets.symmetric(vertical: 8),
-                          child: Padding(
-                            padding: EdgeInsets.all(12),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "Q: ${qa['question']}",
-                                  style: TextStyle(
+              child:
+                  questionsAndAnswers.isNotEmpty
+                      ? ListView.builder(
+                        itemCount: questionsAndAnswers.length,
+                        itemBuilder: (context, index) {
+                          final qa = questionsAndAnswers[index];
+                          return Card(
+                            margin: EdgeInsets.symmetric(vertical: 8),
+                            child: Padding(
+                              padding: EdgeInsets.all(12),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Q: ${qa['question']}",
+                                    style: TextStyle(
                                       fontWeight: FontWeight.bold,
-                                      fontSize: 16),
-                                ),
-                                SizedBox(height: 4),
-                                Text("A: ${qa['answer']}",
-                                    style: TextStyle(fontSize: 14)),
-                              ],
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                  SizedBox(height: 4),
+                                  Text(
+                                    "A: ${qa['answer']}",
+                                    style: TextStyle(fontSize: 14),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                        );
-                      },
-                    )
-                  : Text("No questions generated."),
+                          );
+                        },
+                      )
+                      : Text("No questions generated."),
             ),
           ],
         ),
